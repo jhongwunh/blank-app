@@ -4,7 +4,7 @@ import re
 from io import StringIO
 
 # Title
-st.title("Sentence Tokenizer with Optional Speaker Tag")
+st.title("Sentence Tokenizer")
 
 # Introduction and App Flow
 st.markdown("""
