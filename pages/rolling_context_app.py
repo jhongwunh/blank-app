@@ -10,7 +10,6 @@ uploaded_file = st.file_uploader("📁 Upload your CSV file:", type="csv")
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     st.success("✅ File loaded!")
-    st.write("Available columns:", df.columns.tolist())
 
     # Preview uploaded data
     st.subheader("🔍 Preview Uploaded Data")
