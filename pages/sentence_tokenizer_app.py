@@ -34,18 +34,17 @@ if uploaded_file:
     with st.expander("🔍 Preview Uploaded Data"):
         st.dataframe(df.head(), use_container_width=True)
 
-    with st.form("column_selection"):
-        st.subheader("⚙️ Select Columns")
-        id_col = st.selectbox('🆔 Select ID column', cols, help="Column uniquely identifying each row")
-        context_col = st.selectbox('📝 Select Text column', cols, help="Column containing text to tokenize")
-        speaker_col = st.selectbox('🗣️ Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
+    st.subheader("⚙️ Select Columns")
+    id_col = st.selectbox('Select ID column', cols, help="Column uniquely identifying each row")
+    context_col = st.selectbox('Select Text column', cols, help="Column containing text to tokenize")
+    speaker_col = st.selectbox('Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
 
-        selected_speakers = []
-        if speaker_col:
-            unique_speakers = df[speaker_col].dropna().unique().tolist()
-            selected_speakers = st.multiselect("🎯 Choose speakers to include", unique_speakers, default=unique_speakers)
+    selected_speakers = []
+    if speaker_col:
+        unique_speakers = df[speaker_col].dropna().unique().tolist()
+        selected_speakers = st.multiselect("🎯 Choose speakers to include", unique_speakers, default=unique_speakers)
 
-        run_button = st.form_submit_button("🚀 Run Tokenization")
+    run_button = st.button("🚀 Run Tokenization")
 
     def tokenize(text):
         text = str(text).strip()
