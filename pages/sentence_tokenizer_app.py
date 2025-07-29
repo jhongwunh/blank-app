@@ -35,9 +35,9 @@ if uploaded_file:
         st.dataframe(df.head(), use_container_width=True)
 
     st.subheader("⚙️ Select Columns")
-    id_col = st.selectbox('🆔 Select ID column', cols, help="Column uniquely identifying each row")
-    context_col = st.selectbox('📝 Select Text column', cols, help="Column containing text to tokenize")
-    speaker_col = st.selectbox('🗣️ Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
+    id_col = st.selectbox('Select **ID** column', cols, help="Column uniquely identifying each row")
+    context_col = st.selectbox('Select **Text** column', cols, help="Column containing text to tokenize")
+    speaker_col = st.selectbox('Select **Speaker** column (optional)', [None] + cols, help="Optional column indicating speaker")
 
     selected_speakers = []
     if speaker_col:
