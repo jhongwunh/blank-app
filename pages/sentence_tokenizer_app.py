@@ -35,9 +35,9 @@ if uploaded_file:
         st.dataframe(df.head(), use_container_width=True)
 
     st.subheader("⚙️ Select Columns")
-    id_col = st.selectbox('Select ID column', cols, help="Column uniquely identifying each row")
-    context_col = st.selectbox('Select Text column', cols, help="Column containing text to tokenize")
-    speaker_col = st.selectbox('Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
+    id_col = st.selectbox('🆔 Select ID column', cols, help="Column uniquely identifying each row")
+    context_col = st.selectbox('📝 Select Text column', cols, help="Column containing text to tokenize")
+    speaker_col = st.selectbox('🗣️ Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
 
     selected_speakers = []
     if speaker_col:
@@ -50,9 +50,14 @@ if uploaded_file:
         text = str(text).strip()
         tags = re.findall(r'#\w+', text)
         clean = re.sub(r'#\w+', '', text)
-        # Split by punctuation: .!? followed by space and uppercase, or split by comma/semicolon/colon
-        parts = re.split(r'(?<=[.!?])\s+(?=[A-Z])|[,;:]', clean)
+
+        # Replace <br> with sentence split marker
+        clean = re.sub(r'<br\s*/?>', ' [BR] ', clean, flags=re.IGNORECASE)
+
+        # Initial split by punctuation and markers
+        parts = re.split(r'(?<=[.!?])\s+|[,;:]|\[BR\]', clean)
         parts = [p.strip() for p in parts if p.strip() and not re.fullmatch(r'[.?!,:;"\'\-]+', p)]
+
         if tags:
             parts.append(' '.join(tags))
         return parts
