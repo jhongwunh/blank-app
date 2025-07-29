@@ -1,36 +1,39 @@
 import streamlit as st
 import pandas as pd
 import re
-from io import StringIO
 
-# Title
-st.title("Sentence Tokenizer")
+# Title and Intro
+st.set_page_config(page_title="Sentence Tokenizer", layout="wide")
+st.title("📝 Sentence Tokenizer")
 
-# Introduction and App Flow
-st.markdown("""
-This application allows you to upload a CSV file and tokenize sentences from a selected text column. 
-You can optionally include a speaker column. The steps are as follows:
+with st.expander("ℹ️ How to Use This App"):
+    st.markdown("""
+    This app allows you to upload a CSV file and tokenize sentences from a selected text column. 
+    Optionally include a speaker column.
 
-1. Upload your CSV file.
-2. Select the relevant columns for ID, text (context), and optionally speaker.
-3. Click the **Run** button to process the data.
-4. Preview the first 10 rows of the result.
-5. Download the processed CSV file.
-""")
+    **Steps:**
+    1. Upload your CSV file.
+    2. Select the columns for ID, text, and optionally speaker.
+    3. Click **Run** to process.
+    4. Preview results and download the CSV.
+    """)
 
-# File upload
-uploaded_file = st.file_uploader("Upload your CSV file", type="csv")
+# Upload CSV
+st.subheader("📁 Upload CSV File")
+uploaded_file = st.file_uploader("Choose your CSV file", type="csv")
 
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
     cols = df.columns.tolist()
 
-    # Column selection
-    id_col = st.selectbox('Select ID column:', cols)
-    context_col = st.selectbox('Select Text column:', cols)
-    speaker_col = st.selectbox('Select Speaker column (optional):', [None] + cols)
+    with st.form("column_selection"):
+        st.subheader("🔧 Select Columns")
+        id_col = st.selectbox('ID column:', cols)
+        context_col = st.selectbox('Text column:', cols)
+        speaker_col = st.selectbox('Speaker column (optional):', [None] + cols)
+        run_button = st.form_submit_button("Run")
 
-    # Tokenizer function
+    # Tokenization logic
     def tokenize(text):
         text = str(text).strip()
         tags = re.findall(r'#\w+', text)
@@ -41,7 +44,7 @@ if uploaded_file:
             parts.append(' '.join(tags))
         return parts
 
-    if st.button("Run"):
+    if run_button:
         data = []
         for _, row in df.iterrows():
             sentences = tokenize(row[context_col])
@@ -58,14 +61,13 @@ if uploaded_file:
 
         result = pd.DataFrame(data)
 
-        # Show preview
-        st.subheader("Preview")
-        st.dataframe(result.head(10))
+        st.success("Tokenization complete!")
+        st.subheader("🔍 Preview of Results")
+        st.dataframe(result.head(10), use_container_width=True)
 
-        # Download processed CSV
         csv = result.to_csv(index=False).encode('utf-8')
         st.download_button(
-            label="Download CSV",
+            label="📥 Download Tokenized CSV",
             data=csv,
             file_name='sentence_tokenized.csv',
             mime='text/csv'
