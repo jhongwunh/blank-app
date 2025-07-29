@@ -35,7 +35,7 @@ if uploaded_file:
 
     with st.form("column_selection"):
         st.subheader("⚙️ Select Columns")
-        id_col = st.selectbox('Select ID column', cols, help="Column uniquely identifying each row")
+        id_col = st.selectbox('Select **ID** column', cols, help="Column uniquely identifying each row")
         context_col = st.selectbox('Select Text column', cols, help="Column containing text to tokenize")
         speaker_col = st.selectbox('Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
         run_button = st.form_submit_button("🚀 Run Tokenization")
