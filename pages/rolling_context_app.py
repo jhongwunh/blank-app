@@ -2,23 +2,29 @@ import streamlit as st
 import pandas as pd
 from io import StringIO
 
-st.title("🧠 Rolling Context")
+st.title("🧠 Context Generator for Tokenized Sentences")
 
 # Step 1: Upload CSV
-uploaded_file = st.file_uploader("📁 Upload your CSV file:", type="csv")
+uploaded_file = st.file_uploader("📁 Upload your tokenized CSV file (1 sentence per row):", type="csv")
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     st.success("✅ File loaded!")
-    
+    st.write("Available columns:", df.columns.tolist())
+
     # Preview uploaded data
     st.subheader("🔍 Preview Uploaded Data")
     st.dataframe(df.head(10))
 
     # Step 2: Column selection
-    id_col = st.selectbox("Select **ID** Column:", options=df.columns.tolist())
-    text_col = st.selectbox("Select **Text** Column:", options=df.columns.tolist())
-    speaker_col = st.selectbox("Select **Speaker** Column (Optional):", options=["(None)"] + df.columns.tolist())
+    id_col = st.selectbox("Select ID Column:", options=df.columns.tolist())
+    text_col = st.selectbox("Select Text Column:", options=df.columns.tolist())
+    speaker_col = st.selectbox("Select Speaker Column (Optional):", options=["(None)"] + df.columns.tolist())
+
+    selected_speakers = []
+    if speaker_col != "(None)":
+        unique_speakers = df[speaker_col].dropna().unique().tolist()
+        selected_speakers = st.multiselect("Select Speaker(s) to include:", options=unique_speakers, default=unique_speakers)
 
     # Step 3: Window size
     window_size = st.number_input("Set Window Size:", min_value=0, value=3, step=1)
@@ -34,7 +40,13 @@ if uploaded_file is not None:
             conv_df = df_sorted[df_sorted[id_col] == conv_id].reset_index(drop=True)
             for i in range(len(conv_df)):
                 current_row = conv_df.loc[i]
+
+                if speaker_col != "(None)" and current_row[speaker_col] not in selected_speakers:
+                    continue
+
                 past_window = conv_df.loc[max(0, i - window_size):i - 1]
+                if speaker_col != "(None)":
+                    past_window = past_window[past_window[speaker_col].isin(selected_speakers)]
 
                 context = " ".join(past_window[text_col].astype(str).tolist())
                 entry = {
