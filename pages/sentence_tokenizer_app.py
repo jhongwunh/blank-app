@@ -50,7 +50,8 @@ if uploaded_file:
         text = str(text).strip()
         tags = re.findall(r'#\w+', text)
         clean = re.sub(r'#\w+', '', text)
-        parts = re.split(r'(?<=[.!?])\s+(?=[A-Z])', clean)
+        # Split by punctuation: .!? followed by space and uppercase, or split by comma/semicolon/colon
+        parts = re.split(r'(?<=[.!?])\s+(?=[A-Z])|[,;:]', clean)
         parts = [p.strip() for p in parts if p.strip() and not re.fullmatch(r'[.?!,:;"\'\-]+', p)]
         if tags:
             parts.append(' '.join(tags))
