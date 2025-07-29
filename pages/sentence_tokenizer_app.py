@@ -16,8 +16,9 @@ with st.expander("ℹ️ How to Use This App"):
     **Steps:**
     1. Upload your CSV file.
     2. Select the columns for ID, text, and optionally speaker.
-    3. Click **Run** to process.
-    4. Preview results and download the CSV.
+    3. (Optional) Choose specific speakers to include.
+    4. Click **Run** to process.
+    5. Preview results and download the CSV.
     """)
 
 # Upload CSV
@@ -35,9 +36,15 @@ if uploaded_file:
 
     with st.form("column_selection"):
         st.subheader("⚙️ Select Columns")
-        id_col = st.selectbox('Select **ID** column', cols, help="Column uniquely identifying each row")
-        context_col = st.selectbox('Select **Text** column', cols, help="Column containing text to tokenize")
-        speaker_col = st.selectbox('Select **Speaker** column (optional)', [None] + cols, help="Optional column indicating speaker")
+        id_col = st.selectbox('Select ID column', cols, help="Column uniquely identifying each row")
+        context_col = st.selectbox('Select Text column', cols, help="Column containing text to tokenize")
+        speaker_col = st.selectbox('Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
+
+        selected_speakers = []
+        if speaker_col:
+            unique_speakers = df[speaker_col].dropna().unique().tolist()
+            selected_speakers = st.multiselect("🎯 Choose speakers to include", unique_speakers, default=unique_speakers)
+
         run_button = st.form_submit_button("🚀 Run Tokenization")
 
     def tokenize(text):
@@ -54,6 +61,8 @@ if uploaded_file:
         with st.spinner("Tokenizing sentences..."):
             data = []
             for _, row in df.iterrows():
+                if speaker_col and row[speaker_col] not in selected_speakers:
+                    continue
                 sentences = tokenize(row[context_col])
                 for i, s in enumerate(sentences, 1):
                     entry = {
