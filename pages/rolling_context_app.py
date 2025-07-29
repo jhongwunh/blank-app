@@ -4,6 +4,19 @@ from io import StringIO
 
 st.title("🧠 Rolling Context")
 
+st.markdown("""
+### 📘 How to Use This App
+1. **Upload your CSV file**: The file should be tokenized with one sentence per row.
+2. **Preview the data**: Make sure the content is loaded correctly.
+3. **Select columns**:
+   - Choose the ID column that groups the conversations.
+   - Choose the column containing the statements or sentences.
+   - Optionally, select a speaker column and filter which speakers to include.
+4. **Set the window size**: Define how many previous rows should be included as context.
+5. **Click 'Generate Context'**: The app will process the data and display the result.
+6. **Download the result**: Save the processed data to your computer as a CSV file.
+""")
+
 # Step 1: Upload CSV
 uploaded_file = st.file_uploader("📁 Upload your CSV file:", type="csv")
 
