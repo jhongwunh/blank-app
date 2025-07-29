@@ -36,9 +36,9 @@ if uploaded_file:
 
     with st.form("column_selection"):
         st.subheader("⚙️ Select Columns")
-        id_col = st.selectbox('Select ID column', cols, help="Column uniquely identifying each row")
-        context_col = st.selectbox('Select Text column', cols, help="Column containing text to tokenize")
-        speaker_col = st.selectbox('Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
+        id_col = st.selectbox('🆔 Select ID column', cols, help="Column uniquely identifying each row")
+        context_col = st.selectbox('📝 Select Text column', cols, help="Column containing text to tokenize")
+        speaker_col = st.selectbox('🗣️ Select Speaker column (optional)', [None] + cols, help="Optional column indicating speaker")
 
         selected_speakers = []
         if speaker_col:
@@ -52,7 +52,7 @@ if uploaded_file:
         tags = re.findall(r'#\w+', text)
         clean = re.sub(r'#\w+', '', text)
         parts = re.split(r'(?<=[.!?])\s+(?=[A-Z])', clean)
-        parts = [p.strip() for p in parts if p.strip()]
+        parts = [p.strip() for p in parts if p.strip() and not re.fullmatch(r'[.?!,:;"\'\-]+', p)]
         if tags:
             parts.append(' '.join(tags))
         return parts
@@ -79,6 +79,7 @@ if uploaded_file:
 
         st.success("✅ Tokenization complete!")
         st.subheader("🔍 Preview of Results")
+        st.write(f"Total tokenized sentences: {len(result)}")
         st.dataframe(result.head(10), use_container_width=True)
 
         csv = result.to_csv(index=False).encode('utf-8')
