@@ -2,23 +2,27 @@ import streamlit as st
 import pandas as pd
 from io import StringIO
 
-st.title("🧠 Context Generator for Tokenized Sentences")
+st.title("🧠 Rolling Context")
 
 # Step 1: Upload CSV
-uploaded_file = st.file_uploader("📁 Upload your tokenized CSV file (1 sentence per row):", type="csv")
+uploaded_file = st.file_uploader("📁 Upload your CSV file:", type="csv")
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     st.success("✅ File loaded!")
     st.write("Available columns:", df.columns.tolist())
 
+    # Preview uploaded data
+    st.subheader("🔍 Preview Uploaded Data")
+    st.dataframe(df.head(10))
+
     # Step 2: Column selection
-    id_col = st.selectbox("Select ID Column:", options=df.columns.tolist())
-    text_col = st.selectbox("Select Text Column:", options=df.columns.tolist())
-    speaker_col = st.selectbox("Select Speaker Column (Optional):", options=["(None)"] + df.columns.tolist())
+    id_col = st.selectbox("Select **ID** Column:", options=df.columns.tolist())
+    text_col = st.selectbox("Select **Text** Column:", options=df.columns.tolist())
+    speaker_col = st.selectbox("Select **Speaker** Column (Optional):", options=["(None)"] + df.columns.tolist())
 
     # Step 3: Window size
-    window_size = st.slider("Set Window Size:", min_value=0, max_value=10, value=3)
+    window_size = st.number_input("Set Window Size:", min_value=0, value=3, step=1)
 
     # Step 4: Generate Context
     if st.button("🚀 Generate Context"):
