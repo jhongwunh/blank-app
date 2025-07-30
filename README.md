@@ -17,3 +17,7 @@ A simple Streamlit app template for you to modify!
    ```
    $ streamlit run streamlit_app.py
    ```
+
+## Apps
+1. [`sentence_tokenizer_app.py`](pages/sentence_tokenizer_app.py): Sentence segmentation tool
+2. [`rolling_context_app.py`](pages/rolling_context_app.py): Rolling window context generator
