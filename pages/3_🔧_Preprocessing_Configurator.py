@@ -189,7 +189,7 @@ def build_rows_sentence_level_post(df, id_col, text_col,
 # -----------------------
 # UI
 # -----------------------
-st.title("🔧 PA7 Pre‑processing Configurator")
+st.title("Pre‑processing Configurator")
 st.caption("Choose statement & context cuts; handle hashtags; output standardized schema (ID, Turn, Sentence, Speaker, Context, Statement).")
 
 uploaded = st.file_uploader("Upload a CSV", type=["csv"])
